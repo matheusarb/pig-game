@@ -6,6 +6,8 @@
 'use strict';
 
 // Selecting Elements
+const player0El = document.querySelector('.player--0');
+const player1El = document.querySelector('.player--1');
 const diceElem = document.querySelector('.dice');
 const score0Elem = document.querySelector('#score--0');
 const score1Elem = document.getElementById('score--1');
@@ -44,7 +46,11 @@ btnRoll.addEventListener('click', function () {
     // current0Elem.textContent = currentScore; // CHANGE LATER
   } else {
     // When rolled dice is 1, player loses all score and it switches to the next player
+    document.getElementById(`current--${activePlayer}`).textContent = 0;
+    currentScore = 0;
     activePlayer = activePlayer === 0 ? 1 : 0;
+    player0El.classList.toggle('.player--active'); //toggle method checks if a class is there. If it is, it will remove
+    // and if it is not, it will add
   }
 });
 
