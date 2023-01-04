@@ -26,6 +26,7 @@ diceElem.classList.add('hidden');
 const scores = [0, 0]; // prefer const for arrays
 let currentScore = 0;
 let activePlayer = 0;
+let playing = true; // STATE VARIABLE to deactive buttons in case there is a winner
 
 const switchPlayer = () => {
   document.getElementById(`current--${activePlayer}`).textContent = 0;
@@ -37,42 +38,53 @@ const switchPlayer = () => {
 
 // Rolling Dice Functionality
 btnRoll.addEventListener('click', function () {
-  // 1. Generate a random dice roll;
-  const dice = Math.trunc(Math.random() * 6) + 1;
+  if (playing) {
+    // 1. Generate a random dice roll;
+    const dice = Math.trunc(Math.random() * 6) + 1;
 
-  // 2. Display dice according to the rolled number;
-  diceElem.classList.remove('hidden');
-  diceElem.src = `dice-${dice}.png`;
+    // 2. Display dice according to the rolled number;
+    diceElem.classList.remove('hidden');
+    diceElem.src = `dice-${dice}.png`;
 
-  // 3. check for rolled 1: if true, switch to next player
-  if (dice !== 1) {
-    // Add dice to the current score
-    currentScore += dice;
-    document.getElementById(`current--${activePlayer}`).textContent =
-      currentScore;
+    // 3. check for rolled 1: if true, switch to next player
+    if (dice !== 1) {
+      // Add dice to the current score
+      currentScore += dice;
+      document.getElementById(`current--${activePlayer}`).textContent =
+        currentScore;
 
-    // current0Elem.textContent = currentScore; // CHANGE LATER
-  } else {
-    // When rolled dice is 1, player loses all score and it switches to the next player
-    switchPlayer();
-    //toggle method checks if a class is there. If it is, it will remove
-    // and if it is not, it will add
+      // current0Elem.textContent = currentScore; // CHANGE LATER
+    } else {
+      // When rolled dice is 1, player loses all score and it switches to the next player
+      switchPlayer();
+      //toggle method checks if a class is there. If it is, it will remove
+      // and if it is not, it will add
+    }
   }
 });
 
-// New game functionality
-btnNew.addEventListener('click', function () {});
-
 btnHold.addEventListener('click', function () {
-  // 1. Add current score to active player's score
-  scores[activePlayer] += currentScore;
-  // scores[1] = scores[1] + currentScore;
-  document.getElementById(`current--${activePlayer}`).textContent =
-    scores[activePlayer];
+  if (playing) {
+    // 1. Add current score to active player's score
+    scores[activePlayer] += currentScore;
+    // scores[1] = scores[1] + currentScore;
 
-  // 2. Check if player's score is >= 100
-  // finish the game
+    document.getElementById(`score--${activePlayer}`).textContent =
+      scores[activePlayer];
 
-  // 3. Switch to the next player
-  switchPlayer();
+    // 2. Check if player's score is >= 100
+    // finish the game
+    if (scores[activePlayer] >= 20) {
+      playing = false;
+      document
+        .querySelector(`.player--${activePlayer}`)
+        .classList.add('player--winner');
+      document
+        .querySelector(`.player--${activePlayer}`)
+        .classList.remove('player--active');
+    } else {
+      // 3. Switch to the next player
+      switchPlayer();
+    }
+  }
 });
