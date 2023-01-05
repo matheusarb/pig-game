@@ -18,15 +18,33 @@ const btnNew = document.querySelector('.btn--new');
 const btnRoll = document.querySelector('.btn--roll');
 const btnHold = document.querySelector('.btn--hold');
 
-// Starting Conditions
-score0Elem.textContent = 0;
-score1Elem.textContent = 0;
-diceElem.classList.add('hidden');
+let scores, currentScore, activePlayer, playing;
 
-const scores = [0, 0]; // prefer const for arrays
-let currentScore = 0;
-let activePlayer = 0;
-let playing = true; // STATE VARIABLE to deactive buttons in case there is a winner
+const init = function () {
+  // Starting Conditions
+  scores = [0, 0]; // prefer const for arrays
+  currentScore = 0;
+  activePlayer = 0;
+  playing = true; // STATE VARIABLE to deactive buttons in case there is a winner
+
+  diceElem.classList.add('hidden');
+
+  // 1. The score  and currentScore of each player goes to 0
+  score0Elem.textContent = 0;
+  score1Elem.textContent = 0;
+  current0Elem.textContent = 0;
+  current1Elem.textContent = 0;
+
+  // 2. Black background for the winner disappears
+  document
+    .querySelector(`.player--${activePlayer}`)
+    .classList.remove('player--winner');
+
+  // 3. Remove player--active class from each player
+  player0El.classList.add('player--active');
+  player1El.classList.remove('player--active');
+};
+init();
 
 const switchPlayer = () => {
   document.getElementById(`current--${activePlayer}`).textContent = 0;
@@ -63,6 +81,7 @@ btnRoll.addEventListener('click', function () {
   }
 });
 
+// Hold Button and Winner Functionalities
 btnHold.addEventListener('click', function () {
   if (playing) {
     // 1. Add current score to active player's score
@@ -76,6 +95,7 @@ btnHold.addEventListener('click', function () {
     // finish the game
     if (scores[activePlayer] >= 20) {
       playing = false;
+      diceElem.classList.add('hidden');
       document
         .querySelector(`.player--${activePlayer}`)
         .classList.add('player--winner');
@@ -88,3 +108,6 @@ btnHold.addEventListener('click', function () {
     }
   }
 });
+
+// New game functionality
+btnNew.addEventListener('click', init);
